@@ -31,3 +31,5 @@
 *.swo
 *.swn
 .depend
+
+*.png
