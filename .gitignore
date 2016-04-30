@@ -33,3 +33,7 @@
 .depend
 
 *.png
+render
+segment
+stereo
+
