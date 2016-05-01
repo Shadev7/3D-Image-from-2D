@@ -1,2 +1,4 @@
 naive.segmenter.bgcost 14.8
 mrf.segmenter.alpha 1.0
+mrf.max_iter 10
+
