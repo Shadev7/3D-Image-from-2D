@@ -1,1 +1,2 @@
 naive.segmenter.bgcost 14.8
+mrf.segmenter.alpha 1.0

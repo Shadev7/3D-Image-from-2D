@@ -11,6 +11,7 @@
 #include <assert.h>
 
 #include <NaiveSegmenter.h>
+#include <MRFSegmenter.h>
 #include <Matrix.h>
 #include <Normal.h>
 
@@ -53,5 +54,17 @@ int main(int argc, char *argv[])
 	pairs.second.get_normalize(0, 255).save(
 			(input_filename1 + "-naive_segment_result_bg.png").c_str());
 	
+	// do MRF segmentation
+	MRFSegmenter mrf;
+	labels = mrf.segment(image_rgb, fg_pixels, bg_pixels);
+
+	pairs = BaseSegmenter::get_images(image_rgb, labels);
+
+	pairs.first.get_normalize(0, 255).save(
+			(input_filename1 + "-mrf_segment_result_fg.png").c_str());
+	pairs.second.get_normalize(0, 255).save(
+			(input_filename1 + "-mrf_segment_result_bg.png").c_str());
+	
+
 	return 0;
 }

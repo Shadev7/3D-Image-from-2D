@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <limits>
 
 #include <NaiveSegmenter.h>
 #include <Normal.h>
@@ -7,24 +8,25 @@
 
 using namespace cimg_library;
 
-
-double NaiveSegmenter::cost(double r, double g, double b,
-			const Matrix& mean, const SqMatrix& cov) {
-	Normal n(mean, cov);
-	Matrix m(3, 1);
-	m(0, 0) = r;
-	m(1, 0) = g;
-	m(2, 0) = b;
-	return -std::log(n.eval(m));
-}
-
 CImg<double> NaiveSegmenter::segment(const CImg<double>&img,
 			const std::vector<Point>& fg, const std::vector<Point>& bg) const {
 	CImg<double> result(img.width(), img.height());
-	double constant_cost = config.get<double>("naive.segmenter.bgcost");
+	CImg<double> normal_cost = get_cost_image(img, fg, bg);
+	
+	for(int i=0; i<img.height(); i++) {
+		for(int j=0; j<img.width(); j++) {
+			result(j, i, 0, 0) = normal_cost(j,i,1,0) < normal_cost(j,i,0,0);
+		}
+	}
+	return result;
+}
 
+CImg<double> NaiveSegmenter::get_cost_image(const CImg<double>& img,
+		const std::vector<Point>& fg, const std::vector<Point>& bg) {
 	Matrix mean(3, 1);
 	SqMatrix var(3);
+	double bg_cost = config.get<double>("naive.segmenter.bgcost");
+
 
 	mean(0,0) = mean(1,0) = mean(2,0) = 0.0;
 	var(0,0) = var(0, 1) = var(0, 2) = 0.0;
@@ -43,18 +45,26 @@ CImg<double> NaiveSegmenter::segment(const CImg<double>&img,
 		var(c, c) = var(c, c) / (double)fg.size() - std::pow(mean(c, 0), 2);
 	}
 
+	Normal n(mean, var);
+
+	CImg<double> result(img.width(), img.height(), 2, 1);
 	for(int i=0; i<img.height(); i++) {
 		for(int j=0; j<img.width(); j++) {
 			if (std::find(fg.begin(), fg.end(), Point(j, i)) != fg.end()) {
-				result(j, i, 0, 0) = 0;
+				result(j, i, 0, 0) = std::numeric_limits<double>::infinity();
+				result(j, i, 1, 0) = 0;
 			}
 			else if (std::find(bg.begin(), bg.end(), Point(j, i)) != bg.end()) {
-				result(j, i, 0, 0) = 1;
-			} else {
-				double normal_cost = cost(
-						img(j, i, 0, 0), img(j, i, 0, 1), img(j, i, 0, 2),
-						mean, var);
-				result(j, i, 0, 0) = normal_cost > constant_cost;
+				result(j, i, 0, 0) = 0;
+				result(j, i, 1, 0) = std::numeric_limits<double>::infinity();
+			}
+			else {
+				Matrix m(3, 1);
+				for (int row = 0; row < 3; row++) {
+					m(row, 0) = img(j, i, 0, row);
+				}
+				result(j, i, 1, 0) = -std::log(n.eval(m));
+				result(j, i, 0, 0) = bg_cost;
 			}
 		}
 	}

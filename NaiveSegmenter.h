@@ -11,6 +11,10 @@ public:
 	NaiveSegmenter() {}
 	virtual ~NaiveSegmenter(){}
 
+	static cimg_library::CImg<double> get_cost_image(
+			const cimg_library::CImg<double>&,
+			const std::vector<Point>&, const std::vector<Point>&);
+
 	cimg_library::CImg<double> segment(const cimg_library::CImg<double>&,
 			const std::vector<Point>&, const std::vector<Point>&) const;
 };

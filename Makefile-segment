@@ -3,7 +3,7 @@
 BIN = segment
 
 # Define source files
-SRCS = ./BaseSegmenter.cpp ./segment.cpp ./Matrix.cpp ./Normal.cpp ./NaiveSegmenter.cpp ./Config.cpp ./Point.cpp
+SRCS = ./BaseSegmenter.cpp ./segment.cpp ./Matrix.cpp ./Normal.cpp ./NaiveSegmenter.cpp ./MRFSegmenter.cpp ./Config.cpp ./Point.cpp
 
 # Define header file paths
 INCPATH = -I./
