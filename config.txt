@@ -1,4 +1,5 @@
 naive.segmenter.bgcost 14.8
 mrf.segmenter.alpha 1.0
 mrf.max_iter 10
-
+stereo.max_disp 50
+stereo.window_size 5
