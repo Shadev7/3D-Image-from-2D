@@ -1,6 +1,6 @@
 #ifndef __MRF_H__
 #define __MRF_H__
-
+#define cimg_verbosity 3
 #include <CImg.h>
 
 class MRF {

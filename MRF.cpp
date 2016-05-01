@@ -20,7 +20,8 @@ namespace {
 			return y1 > y2? DIR_SOUTH : DIR_NORTH;
 		else if (y1 == y2)
 			return x1 > x2? DIR_WEST : DIR_EAST;
-		return 0;
+		std::cout<<"Invalid direction: "<<x1<<","<<y1<<","<<x2<<","<<y2<<std::endl;
+		throw "Invalid Direction.";
 	}
 
 	std::vector<Point> get_neighbors(CImg<double> img, int x, int y) {
@@ -82,11 +83,11 @@ CImg<double> MRF::solve(const CImg<double>& D) {
 								if (*it1 == *it2) {
 									continue;
 								}
-								int dir_in = get_dir(it2->row, it2->col, j, i);
-								sum_cost[s2] += prev_msg(it2->row, it2->col, dir_in, s2);
+								int dir_in = get_dir(it2->col, it2->row, j, i);
+								sum_cost[s2] += prev_msg(it2->col, it2->row, dir_in, s2);
 							}
 						}
-						int dir_out = get_dir(j, i, it1->row, it1->col);
+						int dir_out = get_dir(j, i, it1->col, it1->row);
 						cur_msg(j, i, dir_out, s1) = 
 									*std::min_element(sum_cost.begin(), sum_cost.end());
 					}
@@ -94,7 +95,7 @@ CImg<double> MRF::solve(const CImg<double>& D) {
 			}
 		}
 		prev_msg = cur_msg;
-		get_states(D, cur_msg).display("temp");
+		get_states(D, cur_msg).get_normalize(0, 255).save("temp.png", iter);
 	}
 	return get_states(D, cur_msg);
 }
@@ -109,7 +110,7 @@ CImg<double> MRF::get_states(const CImg<double>& D, const CImg<double>& cur_msg)
 				std::vector<Point> neighbors(get_neighbors(D, j, i));
 				for (std::vector<Point>::iterator it = neighbors.begin(); 
 							it != neighbors.end(); it++) {
-					int dir = get_dir(it->row, it->col, j, i);
+					int dir = get_dir(it->col, it->row, j, i);
 					sum_cost[s] += cur_msg(j, i, dir, s);
 				}
 			}
