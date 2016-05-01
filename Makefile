@@ -1,13 +1,13 @@
-all : segment stereo render
+.PHONY = all clean distclean
 
-segment: CImg.h segment.cpp
-	g++ -Dcimg_display=0 segment.cpp -o segment -I. -O3
 
-stereo: CImg.h stereo.cpp
-	g++ -Dcimg_display=0 stereo.cpp -o stereo -I. -O3
-
-render: CImg.h render.cpp
-	g++ -Dcimg_display=0 render.cpp -o render -I. -O3
+# Main entry point
+#
+all:
+	@$(MAKE) -f Makefile-render
+	@$(MAKE) -f Makefile-segment
 
 clean:
-	rm segment stereo render
+	@$(MAKE) clean -f Makefile-render
+	@$(MAKE) clean -f Makefile-segment
+
