@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
 			(input_filename1 + "-naive_segment_result_fg.png").c_str());
 	pairs.second.get_normalize(0, 255).save(
 			(input_filename1 + "-naive_segment_result_bg.png").c_str());
-	
+	labels.get_normalize(0, 255).save(
+			(input_filename1 + "-naive_segment_result_disparity.png").c_str());
+
 	// do MRF segmentation
 	MRFSegmenter mrf;
 	labels = mrf.segment(image_rgb, fg_pixels, bg_pixels);
@@ -64,7 +66,8 @@ int main(int argc, char *argv[])
 			(input_filename1 + "-mrf_segment_result_fg.png").c_str());
 	pairs.second.get_normalize(0, 255).save(
 			(input_filename1 + "-mrf_segment_result_bg.png").c_str());
-	
+	labels.get_normalize(0, 255).save(
+			(input_filename1 + "-mrf_segment_result_disparity.png").c_str());
 
 	return 0;
 }
