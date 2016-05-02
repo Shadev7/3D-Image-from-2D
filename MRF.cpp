@@ -77,7 +77,7 @@ CImg<double> MRF::solve(const CImg<double>& D) {
 						
 						for (int s2 = 0; s2 < num_states; s2++) {
 							sum_cost[s2] = D(j, i, s2, 0);
-							sum_cost[s2] += D(j,i,s1,0) != D(it1->row,it1->col,s2, 0);
+							sum_cost[s2] += s1 != s2;
 							for (std::vector<Point>::iterator it2 = neighbors.begin();
 										it2 != neighbors.end(); it2++) {
 								if (*it1 == *it2) {
